@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>租房对比表</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf7f2;
+    --card-bg: #ffffff;
+    --border: #e8e0d5;
+    --text-primary: #2c2416;
+    --text-secondary: #6b5e4a;
+    --text-muted: #9b8b75;
+    --accent: #c4744a;
+    --accent-light: #f5e6db;
+    --green: #5a8a6a;
+    --green-bg: #eaf4ed;
+    --red: #c45a4a;
+    --red-bg: #fcebeb;
+    --gold: #c49a2a;
+    --gold-bg: #fdf6e3;
+    --shadow-sm: 0 1px 3px rgba(44,36,22,0.06);
+    --shadow-md: 0 4px 16px rgba(44,36,22,0.08);
+    --shadow-lg: 0 12px 40px rgba(44,36,22,0.12);
+    --radius-sm: 8px;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --label-width: 140px;
+    --col-width: 220px;
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 48px 24px;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(196,116,74,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(90,138,106,0.03) 0%, transparent 60%);
+  }
+
+  /* ─── HEADER ─────────────────────── */
+  .header {
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .header-left h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .header-left .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+
+  .chip.active {
+    background: var(--text-primary);
+    color: #fff;
+    border-color: var(--text-primary);
+  }
+
+  .chip:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ─── TOOLBAR ────────────────────── */
+  .toolbar {
+    max-width: 1400px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .toolbar .count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .toolbar .count strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .btn-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border-radius: var(--radius-sm);
+    border: 1.5px dashed var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+
+  .btn-add:hover {
+    background: var(--accent);
+    color: #fff;
+    border-style: solid;
+  }
+
+  .btn-add svg { width: 16px; height: 16px; }
+
+  .btn-reset {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: var(--transition);
+  }
+
+  .btn-reset:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ─── TABLE WRAPPER ──────────────── */
+  .table-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    position: relative;
+  }
+
+  .table-scroll::-webkit-scrollbar { height: 6px; }
+  .table-scroll::-webkit-scrollbar-track { background: transparent; }
+  .table-scroll::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+  .table-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  /* ─── STICKY LABEL COLUMN ───────── */
+  thead th.label-col,
+  tbody td.label-col {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    width: var(--label-width);
+    min-width: var(--label-width);
+    text-align: left;
+    padding: 16px 20px;
+    white-space: nowrap;
+  }
+
+  /* ─── THEAD ──────────────────────── */
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+  }
+
+  thead th {
+    background: var(--card-bg);
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: var(--col-width);
+    position: relative;
+  }
+
+  thead th.label-col {
+    color: var(--text-secondary);
+    text-align: left;
+    font-size: 0.8rem;
+    z-index: 5;
+  }
+
+  .prop-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+  }
+
+  .prop-header .actions {
+    position: absolute;
+    top: -8px;
+    right: 2px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+
+  thead th:hover .prop-header .actions {
+    opacity: 1;
+  }
+
+  .prop-header .icon-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .prop-header .icon-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .prop-header .icon-btn.del:hover {
+    background: var(--red-bg);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .prop-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: var(--transition);
+  }
+
+  .prop-name:hover {
+    background: var(--accent-light);
+  }
+
+  /* ─── ADD COLUMN BUTTON ─────────── */
+  thead th.add-col {
+    min-width: 60px;
+    width: 60px;
+    vertical-align: middle;
+    background: #faf7f2;
+  }
+
+  .add-col-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px dashed var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: var(--text-muted);
+    font-size: 20px;
+    transition: var(--transition);
+  }
+
+  .add-col-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  /* ─── TBODY ──────────────────────── */
+  tbody td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #f0ebe0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    vertical-align: middle;
+    transition: background var(--transition);
+    position: relative;
+  }
+
+  tbody td:first-child {
+    padding: 16px 20px;
+    border-bottom-color: var(--border);
+  }
+
+  tbody td.editable {
+    cursor: pointer;
+  }
+
+  tbody td.editable:hover {
+    background: #fdf8f5;
+    outline: 2px dashed var(--accent-light);
+    outline-offset: -4px;
+    border-radius: 4px;
+  }
+
+  tbody tr:hover td {
+    background: #fdfaf7;
+  }
+
+  tbody tr:hover td.label-col {
+    background: #faf6f1;
+  }
+
+  tbody td.add-col {
+    background: #faf7f2;
+    vertical-align: middle;
+  }
+
+  /* section divider */
+  tr.section-divider td {
+    padding: 0 !important;
+    border-bottom: none;
+    background: transparent !important;
+    height: 8px;
+    pointer-events: none;
+  }
+
+  /* category headers */
+  tr.category-row td {
+    background: #faf6f1 !important;
+    padding: 10px 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: left;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    cursor: default;
+  }
+
+  tr.category-row td:not(.label-col) {
+    text-align: center;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  /* ─── VALUE STYLING ──────────────── */
+  .price {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .price-unit {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .highlight-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .badge-good { background: var(--green-bg); color: var(--green); }
+  .badge-warn { background: #fef7e8; color: #c49a2a; }
+  .badge-bad  { background: var(--red-bg); color: var(--red); }
+
+  .highlight-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .highlight-tag {
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 0.73rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .highlight-tag .tag-remove {
+    display: none;
+    margin-left: 2px;
+    font-size: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .highlight-tag:hover .tag-remove {
+    display: inline;
+  }
+
+  .highlight-tag .tag-add {
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.73rem;
+  }
+
+  /* ─── EMPTY STATE ────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .empty-state p {
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+
+  /* ─── MODAL ──────────────────────── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(44,36,22,0.5);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 620px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+  }
+
+  .modal-close:hover {
+    background: var(--red-bg);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .modal-body {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: #fafaf8;
+    transition: var(--transition);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(196,116,74,0.1);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .form-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .form-tags .tag-item {
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #fafaf8;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .form-tags .tag-item.selected {
+    background: var(--text-primary);
+    color: #fff;
+    border-color: var(--text-primary);
+  }
+
+  .modal-footer {
+    padding: 16px 24px 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background: #b3653d;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--text-secondary);
+  }
+
+  /* ─── ANIMATIONS ─────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  tbody tr {
+    animation: fadeInUp 0.4s ease both;
+  }
+
+  tbody tr:nth-child(1)  { animation-delay: 0.02s; }
+  tbody tr:nth-child(2)  { animation-delay: 0.04s; }
+  tbody tr:nth-child(3)  { animation-delay: 0.06s; }
+  tbody tr:nth-child(4)  { animation-delay: 0.08s; }
+  tbody tr:nth-child(5)  { animation-delay: 0.10s; }
+  tbody tr:nth-child(6)  { animation-delay: 0.12s; }
+  tbody tr:nth-child(7)  { animation-delay: 0.14s; }
+  tbody tr:nth-child(8)  { animation-delay: 0.16s; }
+  tbody tr:nth-child(9)  { animation-delay: 0.18s; }
+  tbody tr:nth-child(10) { animation-delay: 0.20s; }
+  tbody tr:nth-child(11) { animation-delay: 0.22s; }
+  tbody tr:nth-child(12) { animation-delay: 0.24s; }
+  tbody tr:nth-child(13) { animation-delay: 0.26s; }
+  tbody tr:nth-child(14) { animation-delay: 0.28s; }
+
+  /* ─── RESPONSIVE ─────────────────── */
+  @media (max-width: 960px) {
+    body { padding: 24px 16px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .header-right { flex-wrap: wrap; }
+    .toolbar { flex-direction: column; align-items: flex-start; }
+    .table-container { border-radius: var(--radius); }
+    :root { --label-width: 120px; --col-width: 180px; }
+  }
+
+  /* ─── PRINT ──────────────────────── */
+  @media print {
+    body { background: white; padding: 20px; }
+    .table-container { box-shadow: none; border: 1px solid #ccc; }
+    .prop-header .actions, .btn-add, .btn-reset, .add-col-btn { display: none !important; }
+    thead th.add-col, td.add-col { display: none; }
+  }
+
+  /* inline edit input */
+  .inline-input {
+    border: 2px solid var(--accent) !important;
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    text-align: center;
+    width: 100%;
+    max-width: 180px;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(196,116,74,0.12);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>租房对比</h1>
+    <p class="subtitle">双击单元格编辑 · 悬停表头管理房源</p>
+  </div>
+  <div class="header-right">
+    <span class="chip active" onclick="filterTable('all', this)">全部</span>
+    <span class="chip" onclick="filterTable('price', this)">价格对比</span>
+    <span class="chip" onclick="filterTable('env', this)">环境配套</span>
+    <span class="chip" onclick="filterTable('detail', this)">房屋细节</span>
+  </div>
+</div>
+
+<div class="toolbar">
+  <span class="count">当前比较 <strong id="compareCount">0</strong> 个房源</span>
+  <div style="display:flex;gap:8px;">
+    <button class="btn-reset" onclick="resetData()" title="恢复示例数据">恢复默认</button>
+    <button class="btn-add" onclick="openAddModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      添加房源
+    </button>
+  </div>
+</div>
+
+<!-- ── TABLE VIEW ──────────────────── -->
+<div class="table-container">
+  <div class="table-scroll" id="tableScroll">
+    <table id="compareTable">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody">
+        <tr><td colspan="100" class="empty-state">
+          <div class="empty-icon">🏠</div>
+          <p>还没有房源，点击右上角"添加房源"开始吧</p>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── ADD/EDIT MODAL ─────────────── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">添加房源</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" id="modalSave" onclick="saveProperty()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA STORE ─────────────────────
+const STORAGE_KEY = 'rent_compare_data';
+
+const FIELDS = [
+  // [key, label, category, type, options]
+  ['name', '房源名称', '基本信息', 'text', null],
+  ['location', '位置 / 区域', '基本信息', 'text', null],
+  ['subway', '距地铁站', '基本信息', 'text', null],
+  ['rent', '月租金（元）', '基本信息', 'number', null],
+  ['deposit', '押金方式', '基本信息', 'select', ['押一付一','押一付三','押二付一','押二付三']],
+  ['payment', '付款周期', '基本信息', 'select', ['月付','季度付','半年付','年付']],
+
+  ['layout', '户型', '房屋详情', 'text', null],
+  ['area', '面积（㎡）', '房屋详情', 'number', null],
+  ['floor', '楼层', '房屋详情', 'text', null],
+  ['orientation', '朝向', '房屋详情', 'select', ['朝南','南北通透','朝东','朝西','朝东南','朝西南']],
+  ['decoration', '装修情况', '房屋详情', 'select', ['精装修','中等装修','简装修','毛坯']],
+  ['appliances', '家电配置', '房屋详情', 'tags', ['空调','洗衣机','冰箱','热水器','微波炉','电视','油烟机','燃气灶','宽带','暖气']],
+  ['utility', '民水民电', '房屋详情', 'select', ['是','否（商用水电）']],
+  ['pets', '可养宠物', '房屋详情', 'select', ['是','否','协商']],
+
+  ['commute', '通勤时间', '生活配套', 'text', null],
+  ['amenities', '周边配套', '生活配套', 'tags', ['大型商超','便利店','三甲医院','社区医院','公园','餐饮街','健身房','菜市场','电影院']],
+  ['highlights', '亮点加分', '生活配套', 'tags', ['独立阳台','电梯房','首次出租','免中介费','包物业','地下车位','顶层视野好','小院子','安静不临街','带飘窗','智能门锁','集中供暖']],
+];
+
+function defaultData() {
+  return [
+    {
+      id: '1',
+      name: '翡翠湾花园',
+      location: '徐汇区·衡山路', subway: '步行 3 分钟', rent: '4800',
+      deposit: '押一付三', payment: '季度付',
+      layout: '2室1厅1卫', area: '78', floor: '12层 / 共18层',
+      orientation: '朝南', decoration: '精装修',
+      appliances: '空调,洗衣机,冰箱,热水器,微波炉',
+      utility: '是', pets: '否',
+      commute: '约 25 分钟',
+      amenities: '大型商超,三甲医院,公园',
+      highlights: '独立阳台,电梯房,首次出租',
+    },
+    {
+      id: '2',
+      name: '星辰公寓',
+      location: '闵行区·莘庄', subway: '步行 10 分钟', rent: '3200',
+      deposit: '押一付一', payment: '月付',
+      layout: '1室1厅1卫', area: '45', floor: '5层 / 共6层',
+      orientation: '朝东', decoration: '简装修',
+      appliances: '空调,洗衣机,热水器',
+      utility: '否（商用水电）', pets: '是',
+      commute: '约 45 分钟',
+      amenities: '便利店,社区医院',
+      highlights: '免中介费,包物业',
+    },
+    {
+      id: '3',
+      name: '阳光里小区',
+      location: '浦东新区·世纪大道', subway: '步行 5 分钟', rent: '4200',
+      deposit: '押一付三', payment: '季度付',
+      layout: '2室1厅1卫', area: '65', floor: '8层 / 共28层',
+      orientation: '南北通透', decoration: '精装修',
+      appliances: '空调,洗衣机,冰箱,热水器',
+      utility: '是', pets: '协商',
+      commute: '约 20 分钟',
+      amenities: '大型商超,餐饮街,健身房',
+      highlights: '电梯房,地下车位,顶层视野好',
+    },
+    {
+      id: '4',
+      name: '翠竹苑',
+      location: '杨浦区·五角场', subway: '步行 12 分钟', rent: '3600',
+      deposit: '押一付一', payment: '月付',
+      layout: '1室0厅1卫', area: '38', floor: '3层 / 共6层',
+      orientation: '朝南', decoration: '中等装修',
+      appliances: '空调,热水器',
+      utility: '是', pets: '是',
+      commute: '约 40 分钟',
+      amenities: '菜市场,社区医院,公园',
+      highlights: '小院子,安静不临街',
+    }
+  ];
+}
+
+function loadData() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      var data = JSON.parse(raw);
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch(e) {}
+  return defaultData();
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+var properties = loadData();
+var editingId = null;
+
+function resetData() {
+  if (confirm('确定要恢复为默认示例数据吗？你当前的修改将丢失。')) {
+    properties = defaultData();
+    saveData(properties);
+    renderAll();
+  }
+}
+
+// ─── RENDER ─────────────────────────
+function renderAll() {
+  renderHead();
+  renderBody();
+  document.getElementById('compareCount').textContent = properties.length;
+  // re-apply filter
+  var activeChip = document.querySelector('.header-right .chip.active');
+  if (activeChip) filterTable(activeChip.textContent === '全部' ? 'all' :
+    activeChip.textContent === '价格对比' ? 'price' :
+    activeChip.textContent === '环境配套' ? 'env' : 'detail', activeChip);
+}
+
+function renderHead() {
+  var thead = document.getElementById('tableHead');
+  var html = '<tr><th class="label-col">对比项目</th>';
+  properties.forEach(function(p, i) {
+    html += '<th>' +
+      '<div class="prop-header">' +
+      '<div class="actions">' +
+        '<button class="icon-btn" title="编辑房源" onclick="openEditModal(\'' + p.id + '\')">✎</button>' +
+        '<button class="icon-btn del" title="删除房源" onclick="deleteProperty(\'' + p.id + '\')">✕</button>' +
+      '</div>' +
+      '<span class="prop-name" title="点击编辑" onclick="openEditModal(\'' + p.id + '\')">' + esc(p.name) + '</span>' +
+    '</div></th>';
+  });
+  // add column button as last column
+  html += '<th class="add-col"><button class="add-col-btn" onclick="openAddModal()" title="添加房源">+</button></th>';
+  html += '</tr>';
+  thead.innerHTML = html;
+}
+
+function renderBody() {
+  var tbody = document.getElementById('tableBody');
+  if (properties.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="100" class="empty-state"><div class="empty-icon">🏠</div><p>还没有房源，点击右上角"添加房源"开始吧</p></td></tr>';
+    return;
+  }
+
+  var categories = ['基本信息', '房屋详情', '生活配套'];
+  var html = '';
+
+  categories.forEach(function(cat) {
+    // category divider
+    html += '<tr class="category-row"><td class="label-col">' + cat + '</td>';
+    properties.forEach(function() { html += '<td></td>'; });
+    html += '<td></td></tr>';
+
+    // fields in this category
+    FIELDS.forEach(function(f) {
+      if (f[2] !== cat) return;
+      html += '<tr><td class="label-col">' + f[1] + '</td>';
+      properties.forEach(function(p) {
+        var val = p[f[0]] || '—';
+        html += '<td class="editable" data-prop-id="' + p.id + '" data-field="' + f[0] + '" ondblclick="startEditCell(this)">';
+        html += formatValue(f[0], val);
+        html += '</td>';
+      });
+      html += '<td></td></tr>';
+    });
+  });
+
+  tbody.innerHTML = html;
+}
+
+function formatValue(field, val) {
+  if (!val || val === '—') return '—';
+
+  switch(field) {
+    case 'rent':
+      return '<span class="price">' + Number(val).toLocaleString() + '</span> <span class="price-unit">元/月</span>';
+    case 'subway':
+      return '<span class="highlight-badge badge-good">' + esc(val) + '</span>';
+    case 'commute':
+      var isGood = val.includes('20') || val.includes('25');
+      return '<span class="highlight-badge ' + (isGood ? 'badge-good' : 'badge-warn') + '">' + esc(val) + '</span>';
+    case 'orientation':
+      var isGood = val.includes('南');
+      return '<span class="highlight-badge ' + (isGood ? 'badge-good' : 'badge-warn') + '">' + esc(val) + '</span>';
+    case 'decoration':
+      var isGood = val === '精装修';
+      return '<span class="highlight-badge ' + (isGood ? 'badge-good' : isGood === undefined ? 'badge-warn' : '') + '">' + esc(val) + '</span>';
+    case 'utility':
+      var isGood = val === '是';
+      return '<span class="highlight-badge ' + (isGood ? 'badge-good' : 'badge-bad') + '">' + esc(val) + '</span>';
+    case 'pets':
+      var cls = val === '是' ? 'badge-good' : val === '否' ? 'badge-bad' : 'badge-warn';
+      return '<span class="highlight-badge ' + cls + '">' + esc(val) + '</span>';
+    case 'appliances':
+    case 'amenities':
+    case 'highlights':
+      var tags = val.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+      return '<div class="highlight-list">' + tags.map(function(t) {
+        return '<span class="highlight-tag">' + esc(t) +
+          '<span class="tag-remove" onclick="event.stopPropagation();removeTag(this)" data-field="' + field + '" data-val="' + escAttr(t) + '">×</span></span>';
+      }).join('') + '<span class="highlight-tag"><span class="tag-add" onclick="event.stopPropagation();addTag(this)" data-field="' + field + '">+ 添加</span></span></div>';
+    case 'area':
+      return '<strong>' + esc(val) + '</strong> m²';
+    default:
+      return esc(val);
+  }
+}
+
+function esc(s) {
+  if (!s) return '';
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function escAttr(s) {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── CELL EDITING ───────────────────
+function startEditCell(td) {
+  if (td.querySelector('input')) return;
+
+  var propId = td.dataset.propId;
+  var field = td.dataset.field;
+  var prop = properties.find(function(p) { return p.id === propId; });
+  if (!prop) return;
+
+  var fieldDef = FIELDS.find(function(f) { return f[0] === field; });
+  var type = fieldDef ? fieldDef[3] : 'text';
+  var currentVal = prop[field] || '';
+
+  if (type === 'select' || fieldDef[4]) {
+    showInlineSelect(td, prop, field, fieldDef[4], currentVal);
+  } else if (type === 'tags') {
+    showInlineTags(td, prop, field, fieldDef[4], currentVal);
+  } else {
+    showInlineInput(td, prop, field, currentVal);
+  }
+}
+
+function showInlineInput(td, prop, field, currentVal) {
+  td.innerHTML = '';
+  var input = document.createElement('input');
+  input.className = 'inline-input';
+  input.value = currentVal;
+  if (field === 'rent' || field === 'area') input.type = 'number';
+  td.appendChild(input);
+  input.focus();
+  input.select();
+
+  function save() {
+    var v = input.value.trim();
+    prop[field] = v;
+    saveData(properties);
+    renderBody();
+  }
+
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { input.blur(); }
+    if (e.key === 'Escape') { renderBody(); }
+  });
+}
+
+function showInlineSelect(td, prop, field, options, currentVal) {
+  if (!options) {
+    // try to get from field definition
+    var fd = FIELDS.find(function(f) { return f[0] === field; });
+    options = fd ? fd[4] : [];
+  }
+  td.innerHTML = '';
+  var select = document.createElement('select');
+  select.className = 'inline-input';
+  select.style.cssText = 'max-width:200px;cursor:pointer;';
+  options.forEach(function(opt) {
+    var o = document.createElement('option');
+    o.value = opt;
+    o.textContent = opt;
+    if (opt === currentVal) o.selected = true;
+    select.appendChild(o);
+  });
+  td.appendChild(select);
+  select.focus();
+
+  select.addEventListener('change', function() {
+    prop[field] = select.value;
+    saveData(properties);
+    renderBody();
+  });
+  select.addEventListener('blur', function() {
+    renderBody();
+  });
+  select.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') renderBody();
+  });
+}
+
+function showInlineTags(td, prop, field, allOptions, currentVal) {
+  currentVal = currentVal || '';
+  var selected = currentVal.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+
+  td.innerHTML = '';
+  var container = document.createElement('div');
+  container.className = 'highlight-list';
+  container.style.cssText = 'gap:6px;';
+
+  allOptions.forEach(function(opt) {
+    var tag = document.createElement('span');
+    var isSel = selected.indexOf(opt) !== -1;
+    tag.className = 'highlight-tag';
+    tag.style.cssText = isSel ? 'background:var(--text-primary);color:#fff;cursor:pointer;' : 'background:#eee;color:#999;cursor:pointer;';
+    tag.textContent = opt;
+    tag.addEventListener('click', function() {
+      if (isSel) {
+        selected = selected.filter(function(s) { return s !== opt; });
+      } else {
+        selected.push(opt);
+      }
+      isSel = !isSel;
+      tag.style.cssText = !isSel ? 'background:var(--text-primary);color:#fff;cursor:pointer;' : 'background:#eee;color:#999;cursor:pointer;';
+    });
+    container.appendChild(tag);
+  });
+
+  td.appendChild(container);
+
+  // auto-save on click outside
+  function saveTags() {
+    prop[field] = selected.join(',');
+    saveData(properties);
+    renderBody();
+  }
+
+  td.addEventListener('mouseleave', saveTags, { once: true });
+  // Also save on escape
+  td.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') saveTags();
+  });
+}
+
+function removeTag(el) {
+  event.stopPropagation();
+  var field = el.dataset.field;
+  var val = el.dataset.val;
+  var td = el.closest('td');
+  var propId = td.dataset.propId;
+  var prop = properties.find(function(p) { return p.id === propId; });
+  if (!prop) return;
+
+  var current = (prop[field] || '').split(',').map(function(s) { return s.trim(); });
+  prop[field] = current.filter(function(s) { return s !== val; }).join(',');
+  saveData(properties);
+  renderBody();
+}
+
+function addTag(el) {
+  event.stopPropagation();
+  var field = el.dataset.field;
+  var td = el.closest('td');
+  var propId = td.dataset.propId;
+  var prop = properties.find(function(p) { return p.id === propId; });
+  if (!prop) return;
+
+  var fieldDef = FIELDS.find(function(f) { return f[0] === field; });
+  var allOptions = fieldDef ? fieldDef[4] : [];
+
+  var newTag = prompt('输入新标签名，或从以下选择：\n' + allOptions.join(' / '));
+  if (!newTag || !newTag.trim()) return;
+  newTag = newTag.trim();
+
+  var current = (prop[field] || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+  if (current.indexOf(newTag) === -1) current.push(newTag);
+  prop[field] = current.join(',');
+  saveData(properties);
+  renderBody();
+}
+
+// ─── MODAL ──────────────────────────
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = '添加房源';
+  document.getElementById('modalBody').innerHTML = buildForm({});
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function openEditModal(id) {
+  editingId = id;
+  var prop = properties.find(function(p) { return p.id === id; });
+  if (!prop) return;
+  document.getElementById('modalTitle').textContent = '编辑房源';
+  document.getElementById('modalBody').innerHTML = buildForm(prop);
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  editingId = null;
+}
+
+function buildForm(data) {
+  data = data || {};
+  var html = '';
+
+  var currentCat = '';
+  FIELDS.forEach(function(f) {
+    if (f[2] !== currentCat) {
+      if (currentCat !== '') html += '</div>';
+      currentCat = f[2];
+      html += '<div style="font-weight:700;color:var(--accent);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">' + currentCat + '</div>';
+    }
+
+    var val = (data[f[0]] !== undefined ? data[f[0]] : '');
+    var valStr = String(val);
+
+    html += '<div class="form-group">';
+    html += '<label>' + f[1] + '</label>';
+
+    if (f[3] === 'select') {
+      html += '<select name="' + f[0] + '">';
+      f[4].forEach(function(opt) {
+        html += '<option value="' + escAttr(opt) + '"' + (valStr === opt ? ' selected' : '') + '>' + esc(opt) + '</option>';
+      });
+      html += '</select>';
+    } else if (f[3] === 'tags') {
+      html += '<div class="form-tags" id="formTags_' + f[0] + '">';
+      f[4].forEach(function(opt) {
+        var selected = (',' + valStr + ',').indexOf(',' + opt + ',') !== -1;
+        html += '<span class="tag-item' + (selected ? ' selected' : '') + '" data-tag="' + escAttr(opt) + '" onclick="toggleFormTag(this, \'' + f[0] + '\')">' + esc(opt) + '</span>';
+      });
+      html += '</div>';
+      html += '<input type="hidden" name="' + f[0] + '" value="' + escAttr(valStr) + '">';
+    } else if (f[3] === 'number') {
+      html += '<input type="number" name="' + f[0] + '" value="' + escAttr(valStr) + '" placeholder="输入' + f[1] + '">';
+    } else {
+      html += '<input type="text" name="' + f[0] + '" value="' + escAttr(valStr) + '" placeholder="输入' + f[1] + '">';
+    }
+
+    html += '</div>';
+  });
+
+  // rating removed - no longer needed
+
+  return html;
+}
+
+function toggleFormTag(el, fieldName) {
+  el.classList.toggle('selected');
+  var container = document.getElementById('formTags_' + fieldName);
+  var selected = [];
+  container.querySelectorAll('.tag-item.selected').forEach(function(t) {
+    selected.push(t.dataset.tag);
+  });
+  var hidden = container.parentElement.querySelector('input[type="hidden"]');
+  if (hidden) hidden.value = selected.join(',');
+}
+
+function saveProperty() {
+  var form = document.getElementById('modalBody');
+  var inputs = form.querySelectorAll('input[name], select[name]');
+  var data = {};
+
+  inputs.forEach(function(el) {
+    var name = el.getAttribute('name');
+    var val = el.value.trim();
+    data[name] = val;
+  });
+
+  if (!data.name) {
+    alert('请输入房源名称');
+    return;
+  }
+
+  if (editingId) {
+    // update
+    var idx = properties.findIndex(function(p) { return p.id === editingId; });
+    if (idx !== -1) {
+      data.id = editingId;
+      properties[idx] = data;
+    }
+  } else {
+    // add
+    data.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
+    properties.push(data);
+  }
+
+  saveData(properties);
+  closeModal();
+  renderAll();
+}
+
+// ─── DELETE ─────────────────────────
+function deleteProperty(id) {
+  if (!confirm('确定要删除这个房源吗？')) return;
+  properties = properties.filter(function(p) { return p.id !== id; });
+  saveData(properties);
+  renderAll();
+}
+
+// ─── FILTER ─────────────────────────
+function filterTable(type, chip) {
+  document.querySelectorAll('.header-right .chip').forEach(function(c) { c.classList.remove('active'); });
+  chip.classList.add('active');
+
+  var tbody = document.getElementById('tableBody');
+  var rows = tbody.querySelectorAll('tr');
+  if (!rows.length) return;
+
+  if (type === 'all') {
+    rows.forEach(function(r) { r.style.display = ''; });
+    return;
+  }
+
+  var visibleSections = {
+    'price': ['基本信息'],
+    'env':  ['生活配套'],
+    'detail': ['房屋详情']
+  };
+  var sections = visibleSections[type] || [];
+
+  var show = false;
+  rows.forEach(function(r) {
+    if (r.classList.contains('category-row')) {
+      var text = r.textContent.trim();
+      show = sections.some(function(s) { return text.startsWith(s); });
+    }
+    r.style.display = show ? '' : 'none';
+  });
+}
+
+// ─── CLOSE MODAL ON OVERLAY CLICK ───
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ─── KEYBOARD ───────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ─── INIT ───────────────────────────
+renderAll();
+</script>
+
+</body>
+</html>
