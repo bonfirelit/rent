@@ -691,14 +691,342 @@
   tbody tr:nth-child(13) { animation-delay: 0.26s; }
   tbody tr:nth-child(14) { animation-delay: 0.28s; }
 
-  /* ─── RESPONSIVE ─────────────────── */
-  @media (max-width: 960px) {
+  /* ─── MOBILE: CARD LAYOUT ────────── */
+  .cards-container {
+    display: none;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .prop-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .prop-card .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #faf6f1 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prop-card .card-title-area h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .prop-card .card-title-area .card-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .prop-card .card-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .prop-card .card-actions .card-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: var(--transition);
+  }
+
+  .prop-card .card-actions .card-btn:active {
+    transform: scale(0.95);
+  }
+
+  .prop-card .card-actions .card-btn.del-btn {
+    color: var(--red);
+    border-color: #f5d5d5;
+  }
+
+  .prop-card .card-metrics {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prop-card .card-metrics .metric {
+    flex: 1;
+    padding: 10px 6px;
+    text-align: center;
+    border-right: 1px solid #f0ebe0;
+  }
+
+  .prop-card .card-metrics .metric:last-child {
+    border-right: none;
+  }
+
+  .prop-card .metric .metric-value {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .prop-card .metric .metric-value.price-font {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--accent);
+    font-size: 1.05rem;
+  }
+
+  .prop-card .metric .metric-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  .prop-card .card-section {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f5f0ea;
+  }
+
+  .prop-card .card-section:last-child {
+    border-bottom: none;
+  }
+
+  .prop-card .card-section .cs-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .prop-card .card-section .cs-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .prop-card .card-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid #fdfaf7;
+    min-height: 36px;
+  }
+
+  .prop-card .card-field:last-child {
+    border-bottom: none;
+  }
+
+  .prop-card .card-field .cf-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+
+  .prop-card .card-field .cf-value {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    text-align: right;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+
+  .prop-card .card-field .cf-value:active {
+    opacity: 0.6;
+  }
+
+  .prop-card .highlight-badge {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+  }
+
+  .prop-card .highlight-tag {
+    font-size: 0.7rem;
+    padding: 2px 7px;
+  }
+
+  .prop-card .tag-remove {
+    display: inline !important;
+    margin-left: 3px;
+    font-size: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .prop-card .tag-add {
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.7rem;
+  }
+
+  .prop-card .card-field .cf-value .price {
+    font-size: 0.95rem;
+  }
+
+  .prop-card .card-field .cf-value .highlight-list {
+    justify-content: flex-end;
+  }
+
+  /* ─── FAB ────────────────────────── */
+  .fab {
+    display: none;
+  }
+
+  /* ─── MOBILE BREAKPOINT ──────────── */
+  @media (max-width: 768px) {
+    body { padding: 16px 12px 100px; }
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .header-left h1 { font-size: 1.4rem; }
+    .header-left .subtitle { font-size: 0.78rem; }
+
+    .header-right {
+      display: flex;
+      overflow-x: auto;
+      width: 100%;
+      padding-bottom: 4px;
+      gap: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .header-right::-webkit-scrollbar { display: none; }
+
+    .chip {
+      font-size: 0.73rem;
+      padding: 5px 12px;
+      flex-shrink: 0;
+    }
+
+    .toolbar {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .toolbar .count { font-size: 0.78rem; }
+    .toolbar .btn-add { display: none; }
+    .btn-reset { font-size: 0.72rem; padding: 6px 12px; }
+
+    .table-container { display: none; }
+    .cards-container { display: flex; flex-direction: column; }
+
+    .clear-empty { display: none; }
+
+    /* FAB */
+    .fab {
+      display: flex;
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 24px rgba(196,116,74,0.45);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 90;
+      font-size: 26px;
+      font-weight: 300;
+      transition: transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      line-height: 1;
+    }
+
+    .fab:active { transform: scale(0.92); }
+
+    /* mobile modal = bottom sheet */
+    .modal-overlay {
+      padding: 0;
+      align-items: flex-end;
+    }
+
+    .modal {
+      max-width: 100%;
+      max-height: 92vh;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      animation: modalUp 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    @keyframes modalUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header { padding: 14px 18px 12px; }
+    .modal-header h2 { font-size: 1.1rem; }
+    .modal-body { padding: 14px 18px; gap: 12px; }
+    .modal-footer {
+      padding: 12px 18px 16px;
+      flex-direction: column-reverse;
+      gap: 8px;
+      position: sticky;
+      bottom: 0;
+      background: var(--card-bg);
+    }
+
+    .modal-footer .btn { width: 100%; padding: 12px; font-size: 0.95rem; }
+
+    .form-group input,
+    .form-group select { font-size: 16px; padding: 11px 14px; }
+
+    .form-tags .tag-item {
+      padding: 6px 12px;
+      font-size: 0.78rem;
+    }
+  }
+
+  /* ─── MEDIUM SCREEN ──────────────── */
+  @media (max-width: 960px) and (min-width: 769px) {
     body { padding: 24px 16px; }
     .header { flex-direction: column; align-items: flex-start; gap: 16px; }
     .header-right { flex-wrap: wrap; }
     .toolbar { flex-direction: column; align-items: flex-start; }
     .table-container { border-radius: var(--radius); }
     :root { --label-width: 120px; --col-width: 180px; }
+    .cards-container { display: none; }
   }
 
   /* ─── PRINT ──────────────────────── */
@@ -766,6 +1094,9 @@
     </table>
   </div>
 </div>
+
+<!-- ── CARD VIEW (mobile) ──────────── -->
+<div class="cards-container" id="cardsContainer"></div>
 
 <!-- ── ADD/EDIT MODAL ─────────────── -->
 <div class="modal-overlay" id="modalOverlay">
@@ -894,14 +1225,25 @@ function resetData() {
 
 // ─── RENDER ─────────────────────────
 function renderAll() {
-  renderHead();
-  renderBody();
+  var isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    renderCards();
+    // still need head for desktop fallback / events: skip
+    document.getElementById('tableHead').innerHTML = '';
+    document.getElementById('tableBody').innerHTML = '';
+  } else {
+    renderHead();
+    renderBody();
+    document.getElementById('cardsContainer').innerHTML = '';
+  }
   document.getElementById('compareCount').textContent = properties.length;
-  // re-apply filter
-  var activeChip = document.querySelector('.header-right .chip.active');
-  if (activeChip) filterTable(activeChip.textContent === '全部' ? 'all' :
-    activeChip.textContent === '价格对比' ? 'price' :
-    activeChip.textContent === '环境配套' ? 'env' : 'detail', activeChip);
+  // re-apply filter if on desktop
+  if (!isMobile) {
+    var activeChip = document.querySelector('.header-right .chip.active');
+    if (activeChip) filterTable(activeChip.textContent === '全部' ? 'all' :
+      activeChip.textContent === '价格对比' ? 'price' :
+      activeChip.textContent === '环境配套' ? 'env' : 'detail', activeChip);
+  }
 }
 
 function renderHead() {
@@ -954,6 +1296,202 @@ function renderBody() {
   });
 
   tbody.innerHTML = html;
+}
+
+// ─── MOBILE CARD RENDER ───────────
+function renderCards() {
+  var container = document.getElementById('cardsContainer');
+  if (!container) return;
+
+  if (properties.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="text-align:center;padding:60px 20px;color:var(--text-muted)">' +
+      '<div class="empty-icon">🏠</div>' +
+      '<p>还没有房源，点击右下角 + 按钮开始吧</p></div>';
+    return;
+  }
+
+  var html = '';
+  properties.forEach(function(p, idx) {
+    html += renderOneCard(p, idx);
+  });
+  container.innerHTML = html;
+}
+
+function renderOneCard(p, idx) {
+  var h = '';
+  h += '<div class="prop-card" style="animation:fadeInUp 0.35s ease both;animation-delay:' + (idx * 0.06) + 's">';
+
+  // Header
+  h += '<div class="card-header">';
+  h += '<div class="card-title-area">';
+  h += '<h3>' + esc(p.name || '—') + '</h3>';
+  h += '<div class="card-subtitle">' + esc(p.location || '') + (p.subway ? ' · ' + esc(p.subway) : '') + '</div>';
+  h += '</div>';
+  h += '<div class="card-actions">';
+  h += '<button class="card-btn" title=\"编辑\" onclick=\"openEditModal(\'' + p.id + '\')\">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+    '</button>';
+  h += '<button class="card-btn del-btn" title=\"删除\" onclick=\"deleteProperty(\'' + p.id + '\')\">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>' +
+    '</button>';
+  h += '</div>';
+  h += '</div>';
+
+  // Metrics bar
+  h += '<div class="card-metrics">';
+  h += '<div class="metric"><span class="metric-value price-font">' + (p.rent ? Number(p.rent).toLocaleString() : '—') + '</span><span class="metric-label">元/月</span></div>';
+  h += '<div class="metric"><span class="metric-value">' + esc(p.area || '—') + '</span><span class="metric-label">m²</span></div>';
+  h += '<div class="metric"><span class="metric-value">' + esc(p.layout || '—') + '</span><span class="metric-label">户型</span></div>';
+  h += '<div class="metric"><span class="metric-value">' + esc(p.floor || '—') + '</span><span class="metric-label">楼层</span></div>';
+  h += '</div>';
+
+  // Sections (exclude fields already shown in header/metrics)
+  var shown = {name:1, location:1, subway:1, rent:1, area:1, layout:1, floor:1};
+  var cats = ['基本信息', '房屋详情', '生活配套'];
+  cats.forEach(function(cat) {
+    // Check if any non-shown field in this cat has content
+    var hasContent = FIELDS.some(function(f) { return f[2] === cat && !shown[f[0]]; });
+    if (!hasContent) return;
+
+    h += '<div class="card-section">';
+    h += '<div class="cs-title">' + cat + '</div>';
+
+    FIELDS.forEach(function(f) {
+      if (f[2] !== cat || shown[f[0]]) return;
+      var val = p[f[0]] || '—';
+      h += '<div class="card-field">';
+      h += '<span class="cf-label">' + f[1] + '</span>';
+      h += '<span class="cf-value" data-prop-id="' + p.id + '" data-field="' + f[0] + '" onclick="startCardEdit(this)">';
+      h += formatValue(f[0], val);
+      h += '</span>';
+      h += '</div>';
+    });
+
+    h += '</div>';
+  });
+
+  h += '</div>';
+  return h;
+}
+
+// ─── CARD INLINE EDITING ──────────
+function startCardEdit(span) {
+  if (span.dataset.editing === '1') return;
+  span.dataset.editing = '1';
+
+  var propId = span.dataset.propId;
+  var field = span.dataset.field;
+  var prop = properties.find(function(p) { return p.id === propId; });
+  if (!prop) { span.removeAttribute('data-editing'); return; }
+
+  var fieldDef = FIELDS.find(function(f) { return f[0] === field; });
+  var type = fieldDef ? fieldDef[3] : 'text';
+  var currentVal = prop[field] || '';
+
+  if (type === 'select' && fieldDef[4]) {
+    showCardSelect(span, prop, field, fieldDef[4], currentVal);
+  } else if (type === 'tags') {
+    showCardTags(span, prop, field, fieldDef[4], currentVal);
+  } else {
+    showCardInput(span, prop, field, currentVal);
+  }
+}
+
+function showCardInput(span, prop, field, currentVal) {
+  var input = document.createElement('input');
+  input.type = (field === 'rent' || field === 'area') ? 'number' : 'text';
+  input.value = currentVal === '—' ? '' : currentVal;
+  input.style.cssText = 'font-size:0.8rem;border:2px solid var(--accent);border-radius:6px;padding:4px 8px;width:100%;max-width:150px;text-align:right;background:#fff;box-shadow:0 0 0 4px rgba(196,116,74,0.1);min-height:30px;';
+
+  span.innerHTML = '';
+  span.appendChild(input);
+  span.style.justifyContent = 'flex-end';
+  input.focus();
+  input.select();
+
+  function save() {
+    var v = input.value.trim();
+    prop[field] = v;
+    saveData(properties);
+    renderAll();
+  }
+
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { input.blur(); }
+    if (e.key === 'Escape') { save(); }
+  });
+}
+
+function showCardSelect(span, prop, field, options, currentVal) {
+  var select = document.createElement('select');
+  select.style.cssText = 'font-size:0.8rem;border:2px solid var(--accent);border-radius:6px;padding:4px 6px;max-width:160px;background:#fff;box-shadow:0 0 0 4px rgba(196,116,74,0.1);min-height:30px;';
+
+  options.forEach(function(opt) {
+    var o = document.createElement('option');
+    o.value = opt; o.textContent = opt;
+    if (opt === currentVal) o.selected = true;
+    select.appendChild(o);
+  });
+
+  span.innerHTML = '';
+  span.appendChild(select);
+  span.style.justifyContent = 'flex-end';
+  select.focus();
+
+  select.addEventListener('change', function() {
+    prop[field] = select.value;
+    saveData(properties);
+    renderAll();
+  });
+  select.addEventListener('blur', function() { renderAll(); });
+}
+
+function showCardTags(span, prop, field, options, currentVal) {
+  currentVal = (currentVal === '—' ? '' : currentVal);
+  var selected = currentVal.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+
+  span.innerHTML = '';
+  span.style.flexDirection = 'row';
+  span.style.flexWrap = 'wrap';
+  span.style.gap = '4px';
+  span.style.justifyContent = 'flex-end';
+
+  options.forEach(function(opt) {
+    var isSel = selected.indexOf(opt) !== -1;
+    var tag = document.createElement('span');
+    tag.className = 'highlight-tag';
+    tag.textContent = opt;
+    tag.style.cssText = isSel ?
+      'background:var(--accent);color:#fff;cursor:pointer;padding:3px 10px;font-size:0.73rem;border-radius:8px;' :
+      'background:#e8e0d5;color:#8a7a65;cursor:pointer;padding:3px 10px;font-size:0.73rem;border-radius:8px;';
+    tag.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (isSel) {
+        selected = selected.filter(function(s) { return s !== opt; });
+        tag.style.cssText = 'background:#e8e0d5;color:#8a7a65;cursor:pointer;padding:3px 10px;font-size:0.73rem;border-radius:8px;';
+      } else {
+        selected.push(opt);
+        tag.style.cssText = 'background:var(--accent);color:#fff;cursor:pointer;padding:3px 10px;font-size:0.73rem;border-radius:8px;';
+      }
+      isSel = !isSel;
+    });
+    span.appendChild(tag);
+  });
+
+  function saveTags(e) {
+    if (span.contains(e.target)) return;
+    prop[field] = selected.join(',');
+    saveData(properties);
+    document.removeEventListener('click', saveTags);
+    document.removeEventListener('touchend', saveTags);
+    renderAll();
+  }
+
+  setTimeout(function() {
+    document.addEventListener('click', saveTags);
+    document.addEventListener('touchend', saveTags);
+  }, 10);
 }
 
 function formatValue(field, val) {
@@ -1131,22 +1669,24 @@ function removeTag(el) {
   event.stopPropagation();
   var field = el.dataset.field;
   var val = el.dataset.val;
-  var td = el.closest('td');
-  var propId = td.dataset.propId;
+  var container = el.closest('[data-prop-id]');
+  if (!container) return;
+  var propId = container.dataset.propId;
   var prop = properties.find(function(p) { return p.id === propId; });
   if (!prop) return;
 
   var current = (prop[field] || '').split(',').map(function(s) { return s.trim(); });
   prop[field] = current.filter(function(s) { return s !== val; }).join(',');
   saveData(properties);
-  renderBody();
+  renderAll();
 }
 
 function addTag(el) {
   event.stopPropagation();
   var field = el.dataset.field;
-  var td = el.closest('td');
-  var propId = td.dataset.propId;
+  var container = el.closest('[data-prop-id]');
+  if (!container) return;
+  var propId = container.dataset.propId;
   var prop = properties.find(function(p) { return p.id === propId; });
   if (!prop) return;
 
@@ -1161,7 +1701,7 @@ function addTag(el) {
   if (current.indexOf(newTag) === -1) current.push(newTag);
   prop[field] = current.join(',');
   saveData(properties);
-  renderBody();
+  renderAll();
 }
 
 // ─── MODAL ──────────────────────────
@@ -1329,6 +1869,8 @@ document.addEventListener('keydown', function(e) {
 // ─── INIT ───────────────────────────
 renderAll();
 </script>
+
+<button class="fab" onclick="openAddModal()" title="添加房源">+</button>
 
 </body>
 </html>
